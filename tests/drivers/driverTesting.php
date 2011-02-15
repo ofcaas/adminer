@@ -56,6 +56,26 @@ class driverTesting extends PHPUnit_Framework_TestCase
         unset($this->_c);
     }
     
+    /*
+    * Tests of Min_DB
+    */    
+    
+    public function test_connect()
+    {
+        global $driver, $connection;
+        global $server, $user, $pass, $make_db;
+        
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $this->assertFalse($connection->connect("", "", "")); //test of connect with false
+                $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]); //return to normal connect
+                break;
+            default:
+                break;
+        }
+
+    }
+    
     public function test_quote()
     {
         global $driver, $connection;
@@ -69,6 +89,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
+    
+    /*
+    * Tests of another functions
+    */ 
     
     public function test_idf_escape()
     {
