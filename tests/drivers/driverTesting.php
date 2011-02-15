@@ -110,7 +110,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     public function test_limit()
     {
         global $driver;
-
+                                                 
         switch (getNameOfDriver($driver)) {
             case "mssql":
                 $tmp = " TOP (5) querywhere";

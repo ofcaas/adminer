@@ -27,20 +27,20 @@ $pass['mysql'] = "";            //user password
  
  
  /*
- * nastavení parametru nainstalovaneho SQL Serveru
+ * setup params of MSSQL
  *
  */
 
- $server_info = "10.00.1600"; // cislo verze SQL Serveru 
+ $server_info['mssql'] = "10.00.1600"; // version of MSSQL
  
   
  
 /*
- * nastavení tvorby nové databáze
+ * setup testing db
  *
  */
  
- $make_db = "
+ $make_db['mssql'] = "
 CREATE DATABASE mytest;
 
 USE mytest;
