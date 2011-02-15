@@ -56,7 +56,19 @@ class driverTesting extends PHPUnit_Framework_TestCase
         unset($this->_c);
     }
     
-    
+    public function test_quote()
+    {
+        global $driver, $connection;
+        
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $this->assertEquals($connection->quote("test'test"), "'test''test'");
+                break;
+            default:
+                break;
+        }
+
+    }
     
     public function test_idf_escape()
     {
