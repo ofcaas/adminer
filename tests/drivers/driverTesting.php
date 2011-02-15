@@ -90,6 +90,20 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
     
+    public function test_query()
+    {
+        global $driver, $connection;
+        
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                //$this->assertFalse($connection->query("randomtext"));
+                break;
+            default:
+                break;
+        }
+
+    }
+    
     /*
     * Tests of another functions
     */ 
@@ -338,6 +352,25 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
 
+    /*
+     public function test_get_schema()
+    {
+        global $driver;
+
+       switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $this->assertTrue(get_schema());
+                break;
+            case "mysql":
+                //@todo
+                break;
+            default:
+               
+                break;
+        } 
+    }
+    */
+    
     public function test_set_schema()
     {
         global $driver;
@@ -381,6 +414,26 @@ class driverTesting extends PHPUnit_Framework_TestCase
             case "mssql":
                 $tmp = show_status();
                 $this->assertTrue(empty($tmp));
+                break;
+            case "mysql":
+                //@todo
+                break;
+            default:
+               
+                break;
+        } 
+    }
+
+    public function test_support()
+    {
+        global $driver;
+
+       switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $this->assertEquals(support("trigger"), 1);
+                $this->assertEquals(support("view"), 1);
+                $this->assertEquals(support("drop_col"), 1);
+                $this->assertEquals(support("scheme"), 1);
                 break;
             case "mysql":
                 //@todo
