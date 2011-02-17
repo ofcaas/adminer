@@ -43,6 +43,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
         
         $connection = new Min_DB;
         $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]);
+        
+        //$connection->select_db('mytest');
         //$connection->query($make_db);
         
         //$connection = connect();
@@ -60,7 +62,9 @@ class driverTesting extends PHPUnit_Framework_TestCase
     * Tests of Min_DB
     */    
     
-    public function test_connect()
+    
+    // connect to server
+		public function test_connect()
     {
         global $driver, $connection;
         global $server, $user, $pass, $make_db;
@@ -76,6 +80,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
     
+    // quote string
     public function test_quote()
     {
         global $driver, $connection;
@@ -90,6 +95,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
     
+    // send query to server
     public function test_query()
     {
         global $driver, $connection;
@@ -108,6 +114,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     * Tests of another functions
     */ 
     
+    // escape string 
     public function test_idf_escape()
     {
         global $driver;
@@ -126,7 +133,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
     
-    //@todo within mysql, mssql
+    // escape string and add scheme
     public function test_table()
     {
         global $driver;
@@ -148,15 +155,15 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
   
 
-    //@todo
+    //@todo problem with query function
     public function test_get_databases()
     {
-        global $driver;
+        global $driver, $connection;
 
-        //$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, get_databases());
+        $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, get_databases());
     }
 
-    //@todo
+    // show how formulate SQL with limit
     public function test_limit()
     {
         global $driver;
@@ -176,7 +183,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
     }
 
-    
+    // show how formulate SQL with limit with 1
     public function test_limit1()
     {
         global $driver;
@@ -196,7 +203,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
     
-     //@todo
+     //@todo problem with query
     public function test_db_collation()
     {
         global $driver;
@@ -291,7 +298,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         
     }
     
-    /*
+    
     public function test_create_database()
     {
         global $driver, $connection;
@@ -300,8 +307,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
             case "mssql":
                 $connection->query("CREATE DATABASE testTest2");
                 $tmp = create_database("testTest", "Czech_BIN");
-                print $tmp;
-                $this->assertFalse($tmp);
+                
+                $this->assertTrue($tmp);
                 break;
             default:
                
@@ -309,7 +316,40 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
         
     }
-    */
+    
+    public function test_rename_database()
+    {
+        global $driver, $connection;
+
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                define("DB", "testTest");
+                $tmp = rename_database("testTest2", "Czech_CI_AS");
+                $this->assertTrue($tmp);
+                break;
+            default:
+                break;
+        } 
+    }
+    
+    public function test_drop_databases()
+    {
+        global $driver, $connection;
+
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $db[] = "testTest";
+                $db[] = "testTest2";
+                $tmp = drop_databases($db);
+                $this->assertTrue($tmp);
+                break;
+            default:
+               
+                break;
+        }
+        
+    }
+    
     
     public function test_auto_increment()
     {
@@ -424,6 +464,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
 
+    
     public function test_support()
     {
         global $driver;

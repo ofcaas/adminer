@@ -17,8 +17,8 @@
 */
 
 $server['mssql'] = "localhost"; //adrress of server
-$user['mssql'] = "cvut";        //user name
-$pass['mssql'] = "ovecka";      //user password
+$user['mssql'] = "kuba";        //user name
+$pass['mssql'] = "cvut";      //user password
 
 $server['mysql'] = "localhost"; //adrress of server
 $user['mysql'] = "root";        //user name
@@ -27,7 +27,7 @@ $pass['mysql'] = "";            //user password
  
  
  /*
- * setup params of MSSQL
+ * set up params of MSSQL
  *
  */
 
@@ -36,7 +36,7 @@ $pass['mysql'] = "";            //user password
   
  
 /*
- * setup testing db
+ * set up testing db
  *
  */
  
