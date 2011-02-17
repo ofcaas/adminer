@@ -39,9 +39,8 @@ $pass['mysql'] = "";            //user password
  * set up testing db
  *
  */
- 
- $make_db['mssql'] = "
-CREATE DATABASE mytest;
+ $make_db_name['mssql'] = "mytest"; 
+ $make_db['mssql'] = "CREATE DATABASE mytest;
 
 USE mytest;
  

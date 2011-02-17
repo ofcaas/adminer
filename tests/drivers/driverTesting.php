@@ -45,7 +45,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]);
         
         //$connection->select_db('mytest');
-        //$connection->query($make_db);
+        $connection->query($make_db[$d_name]);
         
         //$connection = connect();
     }
@@ -55,6 +55,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
     */    
     public function tearDown()
     {
+        global $driver, $connection, $make_db_name;
+        
+        $db[] = $make_db_name[getNameOfDriver($driver)];
+        drop_databases($db);
         unset($this->_c);
     }
     
@@ -63,22 +67,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     */    
     
     
-    // connect to server
-		public function test_connect()
-    {
-        global $driver, $connection;
-        global $server, $user, $pass, $make_db;
-        
-        switch (getNameOfDriver($driver)) {
-            case "mssql":
-                $this->assertFalse($connection->connect("", "", "")); //test of connect with false
-                $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]); //return to normal connect
-                break;
-            default:
-                break;
-        }
-
-    }
+    
     
     // quote string
     public function test_quote()
@@ -88,6 +77,24 @@ class driverTesting extends PHPUnit_Framework_TestCase
         switch (getNameOfDriver($driver)) {
             case "mssql":
                 $this->assertEquals($connection->quote("test'test"), "'test''test'");
+                break;
+            default:
+                break;
+        }
+
+    }
+    
+    // connect to server
+		public function test_connect()
+    {
+        global $driver, $connection;
+        global $server, $user, $pass, $make_db;
+        $d_name = getNameOfDriver($driver);
+        
+        switch (getNameOfDriver($driver)) {
+            case "mssql":
+                $this->assertFalse($connection->connect("", "", "")); //test of connect with false
+                $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]); //return to normal connect
                 break;
             default:
                 break;
