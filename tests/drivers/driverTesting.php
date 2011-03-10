@@ -274,6 +274,20 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
     
+     public function test_logged_user()
+    {
+        global $driver, $d_name, $user;
+
+       switch ($d_name) {
+            case "mssql":
+                $this->assertEquals(logged_user(), $user[$d_name]);
+                break;
+            default:
+               
+                break;
+        } 
+    }
+
     public function test_is_view()
     {
         global $driver, $d_name;
