@@ -36,7 +36,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         
         $connection = new Min_DB;
         $connection->connect($server[$d_name], $user[$d_name], $pass[$d_name]);
-        $connection->query($make_db[$d_name]);
+        
     }
 
     /*
@@ -46,8 +46,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     {
         global $driver, $connection, $make_db_name, $d_name;
         
-        $db[] = $make_db_name[$d_name];
-        drop_databases($db);
+       
         unset($this->_c);
     }
     
@@ -56,7 +55,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     */    
     
     // connect to server
-		public function test_connect()
+    public function test_connect()
     {
         global $driver, $connection;
         global $server, $user, $pass, $make_db, $d_name;
@@ -97,7 +96,27 @@ class driverTesting extends PHPUnit_Framework_TestCase
         
         switch ($d_name) {
             case "mssql":
-                //$this->assertFalse($connection->query("randomtext"));
+                $this->assertFalse($connection->query("randomtext"));
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    // send query to server and get row of result, testuje i query
+    public function test_result()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $this->assertEquals($connection->result("select * from [mytest].[dbo].[TEST]"), "jedna");
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
                 break;
             default:
                 break;
@@ -150,18 +169,36 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
   
 
-    //@todo problem with query function
+    // get names of dbs
     public function test_get_databases()
     {
-        global $driver, $connection, $d_name;
+        global $driver, $d_name, $make_db_name;
 
-        $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, get_databases());
+        switch ($d_name) {
+            case "mssql":
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, get_databases());
+                create_database("mytest", "Czech_BIN");
+                $mydb = false;
+                foreach(get_databases() as $val){
+                    if($val == "mytest"){
+                        $mydb = true;
+                    }
+                }
+                $this->assertTrue($mydb);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+
+                break;
+        }
+        
     }
 
     // show how formulate SQL with limit
     public function test_limit()
     {
-        global $driver, $d_name, $d_name;
+        global $driver, $d_name;
                                                  
         switch ($d_name) {
             case "mssql":
@@ -196,6 +233,24 @@ class driverTesting extends PHPUnit_Framework_TestCase
                
                 break;
         } 
+    }
+
+     public function test_db_collation()
+    {
+        global $driver, $d_name, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $this->assertEquals("Czech_BIN", db_collation("mytest", ""));
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+
+                break;
+        }
+
     }
     
         
