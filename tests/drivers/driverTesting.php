@@ -314,6 +314,27 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
 
+    public function test_count_tables()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables = "4";
+                $db[] = $make_db_name[$d_name];
+                $res = count_tables($db);
+                $this->assertEquals($res['mytest'], $tables);
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+
 
     public function test_is_view()
     {
