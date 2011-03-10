@@ -235,7 +235,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
 
-     public function test_db_collation()
+    public function test_db_collation()
     {
         global $driver, $d_name, $make_db_name;
 
@@ -274,7 +274,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
     
-     public function test_logged_user()
+    public function test_logged_user()
     {
         global $driver, $d_name, $user;
 
@@ -287,6 +287,33 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 break;
         } 
     }
+
+
+    public function test_tables_list()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables = array ( // from make_db
+                    "TEST" => "USER_TABLE",
+                    "TEST2" => "USER_TABLE",
+                    "NUMBERS" => "USER_TABLE",
+                    "NEWTABLE" => "USER_TABLE"
+                );
+                $this->assertEquals(tables_list(), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+
 
     public function test_is_view()
     {
