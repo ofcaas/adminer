@@ -437,6 +437,22 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
 
 
+    // get names of dbs
+    public function test_collations()
+    {
+        global $driver, $d_name, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, collations());
+            default:
+
+                break;
+        }
+
+    }
+
+
     public function test_information_schema()
     {
         global $driver, $d_name;
