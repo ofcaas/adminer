@@ -45,7 +45,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         global $driver, $connection, $make_db_name, $d_name;
-        
+        $db[] = $make_db_name[$d_name];
+        drop_databases($db);
        
         unset($this->_c);
     }
@@ -437,22 +438,6 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
 
 
-    // get names of dbs
-    public function test_collations()
-    {
-        global $driver, $d_name, $make_db_name;
-
-        switch ($d_name) {
-            case "mssql":
-                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, collations());
-            default:
-
-                break;
-        }
-
-    }
-
-
     public function test_information_schema()
     {
         global $driver, $d_name;
@@ -555,6 +540,20 @@ class driverTesting extends PHPUnit_Framework_TestCase
                
                 break;
         } 
+    }
+
+    public function test_last_id()
+    {
+        global $driver, $d_name;
+
+       switch ($d_name) {
+            case "mssql":
+                $this->assertEquals(last_id(), NULL);
+                break;
+            default:
+
+                break;
+        }
     }
     
     
