@@ -687,6 +687,21 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
 
+    public function test_schemas()
+    {
+        global $driver, $d_name, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, schemas());
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
     
      public function test_get_schema()
     {
