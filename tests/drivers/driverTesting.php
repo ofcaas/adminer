@@ -557,6 +557,31 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
     
     
+    public function test_insert_into()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables = array (
+                   "TEST_NAME" => "'dva'",
+                   "TEST_ID" => "'2'",
+                   "TEST_DATE" => "'M'"
+                );
+                $this->assertTrue(insert_into("TEST", $tables));
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+    
+
     public function test_trigger_options()
     {
         global $driver, $d_name;
@@ -564,9 +589,9 @@ class driverTesting extends PHPUnit_Framework_TestCase
        switch ($d_name) {
             case "mssql":
                 $tmp = array(
-			                   "Timing" => array("AFTER", "INSTEAD OF"),
-			                   "Type" => array("AS"),
-		                   );
+		"Timing" => array("AFTER", "INSTEAD OF"),
+		"Type" => array("AS"),
+		 );
                 $this->assertEquals($tmp, trigger_options());
                 break;
             case "mysql":
