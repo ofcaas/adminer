@@ -606,6 +606,32 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
+
+
+    public function test_drop_view()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name, $make_view;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $connection->query($make_view[$d_name]); // view must be the first query
+                $views = array (
+                        "v"
+                         );
+                $this->assertTrue(drop_views($views));
+                $tables = array ( "select" =>"");
+                $this->assertEquals(view("v"), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
     
 
     public function test_trigger_options()
