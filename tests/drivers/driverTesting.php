@@ -115,7 +115,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 create_database("mytest", "Czech_BIN");
                 $connection->select_db("mytest");
                 $connection->query($make_db[$d_name]);
-                $this->assertEquals($connection->result("select * from [mytest].[dbo].[TEST]"), "jedna");
+                $res = $connection->result("select * from [mytest].[dbo].[TEST]");
+                $this->assertEquals($res, "jedna");
                 $db[] = $make_db_name[$d_name];
                 drop_databases($db);
                 break;
@@ -124,7 +125,54 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
+
+    /*
+    public function test_fetch_assoc()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $res = $connection->query("select * from [mytest].[dbo].[TEST]");
+                $res2 = $res->fetch_assoc();
+                $this->assertEquals($res2[1], "10");
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+     */
     
+    /*
+     public function test_store_result()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                do {
+			$result = $connection->store_result("select * from [mytest].[dbo].[TEST]");
+			$arrayRes = $result->fetch_assoc();
+                } while ($connection->next_result());
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+    */
+
     /*
     * Tests of another functions
     */ 
@@ -413,6 +461,61 @@ class driverTesting extends PHPUnit_Framework_TestCase
             default:
                 break;
         } 
+    }
+
+    public function test_fields()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name, $make_view;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables['TEST_NAME'] = array (
+                    "field" =>"TEST_NAME",
+                    "full_type" => "varchar(5)",
+                    "type" => "varchar",
+                    "length" => "5",
+                    "default" => NULL,
+                    "null" => "0",
+                    "auto_increment" => "0",
+		    "collation" => "Czech_BIN",
+                    "privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+                    "primary" => "0"
+                    );
+                $tables['TEST_ID'] = array (
+                    "field" =>"TEST_ID",
+                    "full_type" => "int",
+                    "type" => "int",
+                    "length" => "",
+                    "default" => NULL,
+                    "null" => "0",
+                    "auto_increment" => "0",
+		    "collation" => NULL,
+                    "privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+                    "primary" => "0"
+                    );
+                $tables['TEST_DATE'] = array (
+                    "field" =>"TEST_DATE",
+                    "full_type" => "varchar(1)",
+                    "type" => "varchar",
+                    "length" => "1",
+                    "default" => NULL,
+                    "null" => "0",
+                    "auto_increment" => "0",
+		    "collation" => "Czech_BIN",
+                    "privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+                    "primary" => "0"
+                    );
+                $this->assertEquals(fields("TEST"), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
     }
 
 
