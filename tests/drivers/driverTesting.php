@@ -580,6 +580,26 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 break;
         } 
     }
+
+    public function test_error()
+    {
+        global $driver, $d_name, $connection;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query("random");
+                $this->assertEquals(error(), "Could not find stored procedure &#039;random&#039;.");
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+
+                break;
+        }
+
+    }
     
     public function test_exact_value()
     {
