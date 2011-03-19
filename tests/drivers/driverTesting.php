@@ -519,6 +519,29 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
 
 
+        public function test_indexes()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name, $make_view;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables['PKINDEX_IDX']['type'] = "PRIMARY";
+                $tables['PKINDEX_IDX']['lengths'] = array();
+                $tables['PKINDEX_IDX']['columns'][1] = "ID";
+                $this->assertEquals(indexes("NEWTABLE"), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
      public function test_view()
     {
         global $driver, $connection, $d_name, $make_db, $make_db_name, $make_view;
