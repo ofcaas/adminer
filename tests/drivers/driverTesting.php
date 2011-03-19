@@ -572,6 +572,32 @@ class driverTesting extends PHPUnit_Framework_TestCase
                    "TEST_DATE" => "'M'"
                 );
                 $this->assertTrue(insert_into("TEST", $tables));
+                
+                $this->assertEquals($connection->result("select TEST_NAME from TEST where TEST_ID=2"), "dva");
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public function test_truncate_tables()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables = array (
+                   "TEST"
+                );
+                $this->assertTrue(truncate_tables($tables));
+
+                $this->assertEquals($connection->result("select * from TEST"), NULL);
                 $db[] = $make_db_name[$d_name];
                 drop_databases($db);
                 break;
