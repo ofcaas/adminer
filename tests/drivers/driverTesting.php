@@ -701,6 +701,31 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 break;
         }
     }
+
+    
+    public function test_foreign_keys()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $tables['FK_ID2'] = array (
+                   "table" => "TEST",
+                   "source" => array("ID2"),
+                   "target" => array("TEST_ID")
+                );
+                $this->assertEquals(foreign_keys("TEST2"), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
     
     
     public function test_insert_into()
@@ -739,11 +764,11 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $connection->select_db("mytest");
                 $connection->query($make_db[$d_name]);
                 $tables = array (
-                   "TEST"
+                   "TEST2"
                 );
                 $this->assertTrue(truncate_tables($tables));
 
-                $this->assertEquals($connection->result("select * from TEST"), NULL);
+                $this->assertEquals($connection->result("select * from TEST2"), NULL);
                 $db[] = $make_db_name[$d_name];
                 drop_databases($db);
                 break;
@@ -795,9 +820,9 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     "NEWTABLE" => "USER_TABLE"
                 );
                 $this->assertEquals(tables_list(), $tables);
-                $this->assertTrue(drop_tables(array("TEST")));
+                $this->assertTrue(drop_tables(array("TEST2")));
                 $tables2 = array ( // from make_db
-                    "TEST2" => "USER_TABLE",
+                    "TEST" => "USER_TABLE",
                     "NUMBERS" => "USER_TABLE",
                     "NEWTABLE" => "USER_TABLE"
                 );
@@ -810,7 +835,29 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
-    
+    /*
+    public function test_triggers()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name, $make_trigger;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $connection->query($make_trigger[$d_name]);
+                
+                $tables = array();
+                $this->assertEquals(triggers("test"), $tables);
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+    */
 
     public function test_trigger_options()
     {
