@@ -835,6 +835,30 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
+
+    /*
+    public function test_move_tables()
+    {
+        global $driver, $connection, $d_name, $make_db, $make_db_name;
+
+        switch ($d_name) {
+            case "mssql":
+                create_database("mytest", "Czech_BIN");
+                $connection->select_db("mytest");
+                $connection->query($make_db[$d_name]);
+                $connection->query($make_view[$d_name]);
+                $this->assertTrue(move_tables(array("newtable"), array("v"), "guest"));
+                
+                $db[] = $make_db_name[$d_name];
+                drop_databases($db);
+                break;
+            default:
+                break;
+        }
+
+    }
+     */
+
     /*
     public function test_triggers()
     {
