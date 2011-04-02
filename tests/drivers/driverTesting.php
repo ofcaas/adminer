@@ -98,12 +98,15 @@ class driverTesting extends PHPUnit_Framework_TestCase
     
     
     // send query to server
-    public function test_query()
+    public function test_query_row()
     {
         global $connection;
         switch ($this->d_name) {
             case "mssql":
                 $this->assertFalse($connection->query("randomtext"));
+                $result = $connection->query("select suser_name()");
+                $array = $result->fetch_row();
+                $this->assertEquals($array[0], $this->user);
                 break;
             default:
                 break;
