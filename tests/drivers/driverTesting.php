@@ -189,10 +189,19 @@ class driverTesting extends PHPUnit_Framework_TestCase
     // escape string 
     public function test_idf_escape()
     {
-               
+        global $connection;
+
         switch ($this->d_name) {
             case "mssql":
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $result = $connection->query("select * from " . idf_escape("TEST"));
+                $row = $result->fetch_row();
+                $this->assertEquals($row[0], "jedna");
                 $this->assertEquals(idf_escape("test]test"), "[test]]test]");
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
                 $this->assertEquals(idf_escape("test`test"), "`test``test`");
