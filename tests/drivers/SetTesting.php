@@ -16,31 +16,22 @@
 *
 */
 
-$server['mssql'] = "localhost"; //adrress of server
-$user['mssql'] = "kuba";        //user name
-$pass['mssql'] = "cvut";      //user password
+$test_server['mssql'] = "localhost"; //adrress of server
+$test_user['mssql'] = "kuba";        //user name
+$test_pass['mssql'] = "cvut";      //user password
 
-$server['mysql'] = "localhost"; //adrress of server
-$user['mysql'] = "root";        //user name
-$pass['mysql'] = "";            //user password
+$test_server['mysql'] = "localhost"; //adrress of server
+$test_user['mysql'] = "root";        //user name
+$test_pass['mysql'] = "";            //user password
  
  
- 
- /*
- * set up params of MSSQL
- *
- */
-
- $server_info['mssql'] = "10.00.1600"; // version of MSSQL
- 
-  
  
 /*
  * set up testing db
  *
  */
- $make_db_name['mssql'] = "mytest"; 
- $make_db['mssql'] = "
+ $test_make_db_name['mssql'] = "mytest";
+ $test_make_db['mssql'] = "
 
 -- TABLE TEST
 CREATE TABLE TEST (
@@ -89,7 +80,7 @@ ALTER TABLE NEWTABLE ADD CONSTRAINT PKINDEX_IDX PRIMARY KEY (ID);
 
 ";
 
-$make_view['mssql'] = "CREATE VIEW v AS SELECT * FROM TEST WHERE TEST_NAME = 1";
-$make_trigger['mssql'] = "CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END";
+$test_make_view['mssql'] = "CREATE VIEW v AS SELECT * FROM TEST WHERE TEST_NAME = 1";
+$test_make_trigger['mssql'] = "CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END";
 
 ?>
