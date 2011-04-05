@@ -645,9 +645,23 @@ class driverTesting extends PHPUnit_Framework_TestCase
     
     public function test_exact_value()
     {
+        global $connection;
+        
         switch ($this->d_name) {
             case "mssql":
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $result = $connection->result("select * from [dbo].[TEST] where TEST_NAME like " . exact_value("j%"));
+                $this->assertEquals($result, 'jedna');
+                $result = $connection->result("select * from [dbo].[TEST] where TEST_ID like " . exact_value("1%"));
+                $this->assertEquals($result, 'jedna');
+                $result = $connection->result("select * from [dbo].[TEST] where TEST_NAME like " . exact_value("%nA"));
+                $this->assertEquals($result, null);
                 $this->assertEquals(exact_value("test'test"), "'test''test'");
+
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             default:
                
