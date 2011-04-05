@@ -720,11 +720,24 @@ class driverTesting extends PHPUnit_Framework_TestCase
     
     public function test_auto_increment()
     {
+       global $connection;
+       
        switch ($this->d_name) {
             case "mssql":
-                $tmp = " IDENTITY(5,1) PRIMARY KEY";
-                $_POST["Auto_increment"] = "5"; 
-                $this->assertEquals($tmp, auto_increment());
+                $_POST["Auto_increment"] = "5"; //to set auto_increment
+
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query("CREATE TABLE test_ai (
+                      id INTEGER ". auto_increment() .",
+                      name varchar(16) NOT NULL
+                    )");
+                $connection->query("insert into test_ai (name) values ('test')");
+                $this->assertEquals($connection->result("select id from test_ai"), "5");
+                drop_tables(array("test_ai"));
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
                 //@todo
