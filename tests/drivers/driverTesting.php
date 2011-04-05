@@ -472,14 +472,21 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     public function test_is_view()
     {
+       global $connection;
+       
        switch ($this->d_name) {
             case "mssql":
-                $tmp["Engine"] = "VIEW";
-                $this->assertTrue(is_view($tmp));
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query($this->make_db_view); // view must be the first query
+                $this->assertTrue(is_view(table_status("v")));
+                $this->assertFalse(is_view(table_status("TEST")));
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
-                $tmp["Rows"] = " ";
-                $this->assertTrue(is_view($tmp));
+
                 break;
             default:
                
