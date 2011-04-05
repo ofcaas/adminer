@@ -150,7 +150,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     /*
     public function test_fetch_assoc()
     {
-        global $connection,  $driver, $connection, $d_name, $make_db, $make_db_name;
+        global $connection;
 
         switch ($d_name) {
             case "mssql":
@@ -236,6 +236,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $this->assertEquals($row[0], "jedna");
                 $_GET["ns"] = "dbo";
                 $this->assertEquals(table("test]test"), "[dbo].[test]]test]");
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
                 $this->assertEquals(table("test`test"), "`test``test`");
@@ -278,11 +280,17 @@ class driverTesting extends PHPUnit_Framework_TestCase
     // show how formulate SQL with limit
     public function test_limit()
     {
-                                                 
+        global $connection;
+
         switch ($this->d_name) {
             case "mssql":
-                $tmp = " TOP (5) querywhere";
-                $this->assertEquals(limit("query", "where", "5"), $tmp);
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $rows = get_rows("select" . limit(" * from TEST", " where TEST_ID != '500'", "2"));
+                $this->assertEquals(count($rows), "2");
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
                 $tmp = "querywhere LIMIT 5 OFFSET 1";
@@ -297,10 +305,17 @@ class driverTesting extends PHPUnit_Framework_TestCase
     // show how formulate SQL with limit with 1
     public function test_limit1()
     {
-       switch ($this->d_name) {
+       global $connection;
+
+        switch ($this->d_name) {
             case "mssql":
-                $tmp = " TOP (1) querywhere";
-                $this->assertEquals(limit1("query", "where"), $tmp);
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $rows = get_rows("select" . limit1(" * from TEST", " where TEST_ID != '500'"));
+                $this->assertEquals(count($rows), "1");
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             case "mysql":
                 $tmp = "querywhere LIMIT 1";
