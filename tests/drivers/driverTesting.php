@@ -737,9 +737,20 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     public function test_last_id()
     {
-       switch ($this->d_name) {
+        global $connection;
+
+        switch ($this->d_name) {
             case "mssql":
                 $this->assertEquals(last_id(), NULL);
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query("insert into NUMBERS (EN, FR) VALUES ('', '')");
+                $connection->query("insert into NUMBERS (EN, FR) VALUES ('', '')");
+                $this->assertEquals(last_id(), "2");
+                
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             default:
 
