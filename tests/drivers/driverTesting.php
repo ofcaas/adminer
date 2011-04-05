@@ -1020,8 +1020,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     {
        switch ($this->d_name) {
             case "mssql":
-                $tmp = show_variables();
-                $this->assertTrue(empty($tmp));
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, show_variables());
                 break;
             case "mysql":
                 //@todo
@@ -1036,8 +1035,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     {
        switch ($this->d_name) {
             case "mssql":
-                $tmp = show_status();
-                $this->assertTrue(empty($tmp));
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, show_status());
                 break;
             case "mysql":
                 //@todo
