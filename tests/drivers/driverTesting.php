@@ -87,7 +87,19 @@ class driverTesting extends PHPUnit_Framework_TestCase
         global $connection;
         switch ($this->d_name) {
             case "mssql":
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query("INSERT INTO TEST
+                    (TEST_NAME, TEST_ID, TEST_DATE)
+                    VALUES (" . $connection->quote("it's") . ",
+                        " . $connection->quote("20") . ",
+                        " . $connection->quote("") . ")");
+                $res = $connection->result("select * from [mytest].[dbo].[TEST] where TEST_ID = '20'");
+                $this->assertEquals($res, "it's");
                 $this->assertEquals($connection->quote("test'test"), "'test''test'");
+                $db[] = $this->make_db_name;
+                drop_databases($db);
                 break;
             default:
                 break;
@@ -193,15 +205,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $result = $connection->query("select * from " . idf_escape("TEST"));
-                $row = $result->fetch_row();
-                $this->assertEquals($row[0], "jedna");
+                $this->assertTrue($connection->query("create database " . idf_escape("[TEST]")));
                 $this->assertEquals(idf_escape("test]test"), "[test]]test]");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                $db[] = "[TEST]";
+                $this->assertTrue(drop_databases($db));
                 break;
             case "mysql":
                 $this->assertEquals(idf_escape("test`test"), "`test``test`");
@@ -216,10 +223,19 @@ class driverTesting extends PHPUnit_Framework_TestCase
     // escape string and add scheme
     public function test_table()
     {
+        global $connection;
+        
         switch ($this->d_name) {
             case "mssql":
-                $_GET["ns"] = "owner";
-                $this->assertEquals(table("test]test"), "[owner].[test]]test]");
+                
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $result = $connection->query("select * from " . table("TEST"));
+                $row = $result->fetch_row();
+                $this->assertEquals($row[0], "jedna");
+                $_GET["ns"] = "dbo";
+                $this->assertEquals(table("test]test"), "[dbo].[test]]test]");
                 break;
             case "mysql":
                 $this->assertEquals(table("test`test"), "`test``test`");
