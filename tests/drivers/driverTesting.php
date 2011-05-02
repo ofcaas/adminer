@@ -748,6 +748,59 @@ class driverTesting extends PHPUnit_Framework_TestCase
         } 
     }
 
+    public function test_alter_table()
+    {
+       global $connection;
+
+       switch ($this->d_name) {
+            case "mssql":
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                
+                $col = array(
+                    " TEST_NAME ",
+                    " varchar(5) ",
+                    " NOT NULL ", "", "", "", ""
+                );
+                // to create table with one column
+                $this->assertTrue(alter_table("", "tabulka", array(array("", $col, "")), array(), "", "", "", "", ""));
+                $is_added = false;
+                foreach(tables_list() as $key => $val){
+                    if($key == "tabulka") $is_added = true;
+                }
+                $this->assertTrue($is_added);
+
+                // to rename table, alter column, rename column
+                $col2 = array(
+                    " TEST_NAME2 ",
+                    " varchar(10) ",
+                    " NOT NULL ", "", "", "", ""
+                );
+                $this->assertTrue(alter_table("tabulka", "tabulka2", array(array("TEST_NAME", $col2, ""), array("", $col, "")), array(), "", "", "", "", ""));
+                $is_added = false;
+                foreach(tables_list() as $key => $val){
+                    if($key == "tabulka2") $is_added = true;
+                }
+                $this->assertTrue($is_added);
+               
+
+                // to drop column
+                $this->assertTrue(alter_table("tabulka2", "tabulka2", array(array("TEST_NAME2", array(), "")), array(), "", "", "", "", ""));
+
+                $db[] = $this->make_db_name;
+                drop_tables(array("tabulka", "tabulka2"));
+                drop_databases($db);
+                break;
+            case "mysql":
+                //@todo
+                break;
+            default:
+
+                break;
+        }
+    }
+
     public function test_last_id()
     {
         global $connection;
@@ -905,20 +958,20 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
 
-    /*
-    public function test_move_tables()
+    
+    /*public function test_move_tables()
     {
-        global $connection,  $driver, $connection, $d_name, $make_db, $make_db_name;
+        global $connection;
 
-        switch ($d_name) {
+        switch ($this->d_name) {
             case "mssql":
-                create_database("mytest", "Czech_BIN");
-                $connection->select_db("mytest");
-                $connection->query($make_db[$d_name]);
-                $connection->query($make_view[$d_name]);
-                $this->assertTrue(move_tables(array("newtable"), array("v"), "guest"));
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query($this->make_view);
+                $this->assertTrue(move_tables(array("TEST"), array("v"), "guest"));
                 
-                $db[] = $make_db_name[$d_name];
+                $db[] = $this->make_db_name;
                 drop_databases($db);
                 break;
             default:
@@ -926,23 +979,23 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
-     */
+    */
 
     /*
-    public function test_triggers()
+    public function test_trigger()
     {
-        global $connection,  $driver, $connection, $d_name, $make_db, $make_db_name, $make_trigger;
+        global $connection;
 
-        switch ($d_name) {
+        switch ($this->d_name) {
             case "mssql":
-                create_database("mytest", "Czech_BIN");
-                $connection->select_db("mytest");
-                $connection->query($make_db[$d_name]);
-                $connection->query($make_trigger[$d_name]);
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $connection->query("CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END");
                 
-                $tables = array();
-                $this->assertEquals(triggers("test"), $tables);
-                $db[] = $make_db_name[$d_name];
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, trigger(array("potvrzeni")));
+                $this->assertEquals(trigger(array("potvrzeni")), array("sgsdg"));
+                $db[] = $this->make_db_name;
                 drop_databases($db);
                 break;
             default:
