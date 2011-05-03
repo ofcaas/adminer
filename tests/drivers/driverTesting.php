@@ -801,6 +801,49 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function test_alter_indexes()
+    {
+       global $connection;
+
+       switch ($this->d_name) {
+            case "mssql":
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+
+                //to create index
+                $this->assertTrue(alter_indexes("NUMBERS", array(array("INDEX", "(EN)"))));
+                $tables = array(
+                    'type' => "INDEX",
+                    'lengths' => array(),
+                    'columns' => array("EN")
+                );
+                $is_index = false;
+                foreach(indexes("NUMBERS") as $key => $value){                 
+                    if($value['type'] == "INDEX" || $value['columns'][1] == "EN"){
+                        $is_index = true;
+                        $name = $key;
+                    }
+                }
+                $this->assertTrue($is_index);
+
+                //to drop index
+                $this->assertTrue(alter_indexes("NUMBERS", array(array("INDEX", $name, DROP))));
+                $array = indexes("NUMBERS");
+                $this->assertTrue(empty($array));
+
+                $db[] = $this->make_db_name;
+                drop_databases($db);
+                break;
+            case "mysql":
+                //@todo
+                break;
+            default:
+
+                break;
+        }
+    }
+
     public function test_last_id()
     {
         global $connection;

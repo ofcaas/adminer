@@ -444,6 +444,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 				if ($val[0] == "PRIMARY") { //! sometimes used also for UNIQUE
 					$drop[] = $val[1];
 				} else {
+
 					$index[] = "$val[1] ON " . table($table);
 				}
 			} elseif (!queries(($val[0] != "PRIMARY"
