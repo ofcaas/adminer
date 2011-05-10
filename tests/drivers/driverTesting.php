@@ -82,7 +82,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     
     
     // quote string
-    public function test_quote()
+    public function test_quote_result()
     {
         global $connection;
         switch ($this->d_name) {
@@ -126,7 +126,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
 
-    // send query to server and get row of result, testuje i query
+    // send query to server and get row of result
     public function test_result()
     {
         global $connection;
@@ -147,52 +147,27 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
 
-    /*
+    
     public function test_fetch_assoc()
     {
-        global $connection;
-
-        switch ($d_name) {
+       global $connection;
+        switch ($this->d_name) {
             case "mssql":
-                create_database("mytest", "Czech_BIN");
-                $connection->select_db("mytest");
-                $connection->query($make_db[$d_name]);
-                $res = $connection->query("select * from [mytest].[dbo].[TEST]");
-                $res2 = $res->fetch_assoc();
-                $this->assertEquals($res2[1], "10");
-                $db[] = $make_db_name[$d_name];
-                drop_databases($db);
+                create_database($this->make_db_name, "Czech_BIN");
+                $connection->select_db($this->make_db_name);
+                $connection->query($this->make_db);
+                $result = $connection->query("select * from [TEST] where TEST_ID = '10'");
+                $array = $result->fetch_assoc();
+                $this->assertEquals($array["TEST_NAME"], "jedna");
                 break;
             default:
                 break;
         }
 
     }
-     */
+     
     
-    /*
-     public function test_store_result()
-    {
-        global $connection,  $driver, $connection, $d_name, $make_db, $make_db_name;
-
-        switch ($d_name) {
-            case "mssql":
-                create_database("mytest", "Czech_BIN");
-                $connection->select_db("mytest");
-                $connection->query($make_db[$d_name]);
-                do {
-			$result = $connection->store_result("select * from [mytest].[dbo].[TEST]");
-			$arrayRes = $result->fetch_assoc();
-                } while ($connection->next_result());
-                $db[] = $make_db_name[$d_name];
-                drop_databases($db);
-                break;
-            default:
-                break;
-        }
-
-    }
-    */
+  
 
     /*
     * Tests of another functions
@@ -1028,7 +1003,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
 
     
-    /*public function test_move_tables()
+    public function test_move_tables()
     {
         global $connection;
 
@@ -1038,7 +1013,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $connection->select_db($this->make_db_name);
                 $connection->query($this->make_db);
                 $connection->query($this->make_view);
-                $this->assertTrue(move_tables(array("TEST"), array("v"), "guest"));
+                $this->assertTrue(move_tables(array("NUMBERS"), array(), "dbo"));
                 
                 $db[] = $this->make_db_name;
                 drop_databases($db);
@@ -1048,7 +1023,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         }
 
     }
-    */
+    
 
     /*
     public function test_trigger()
@@ -1063,7 +1038,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $connection->query("CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END");
                 
                 $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, trigger(array("potvrzeni")));
-                $this->assertEquals(trigger(array("potvrzeni")), array("sgsdg"));
+                $this->assertEquals(trigger(array("potvrzeni")), array(""));
                 $db[] = $this->make_db_name;
                 drop_databases($db);
                 break;
