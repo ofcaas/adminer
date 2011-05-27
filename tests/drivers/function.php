@@ -84,12 +84,84 @@ function drop_db($t){
     drop_databases($db);
 }
 
-function is_key_string($ar){
-
+/* When keys of array are string, return true
+*
+* @param array assoc
+* @return boolean
+*/
+function is_array_key_string($ar){
+    $is_string = true;
+    
+    foreach($ar as $key => $val){
+        if(!is_string($key)){
+            $is_string = false;
+        }
+    }
+    return $is_string;
 }
 
-function is_key_value($ar){
+/* When vals of array are string, return true
+*
+* @param array assoc
+* @return boolean
+*/
+function is_array_val_string($ar){
+    $is_string = true;
 
+    foreach($ar as $key => $val){
+        if(!is_string($val)){
+            $is_string = false;
+        }
+    }
+    return $is_string;
+}
+
+/* When member of array are string, return true
+*
+* @param array assoc
+* @return boolean
+*/
+function is_array_string($ar){
+    $is_string = true;
+
+    foreach($ar as $key){
+        if(!is_string($key)){
+            $is_string = false;
+        }
+    }
+    return $is_string;
+}
+
+/* When vals of array are arrays, return true
+*
+* @param array assoc
+* @return boolean
+*/
+function is_array_val_array($ar){
+    $is_array = true;
+
+    foreach($ar as $key => $val){
+        if(!is_array($val)){
+            $is_array = false;
+        }
+    }
+    return $is_array;
+}
+
+/* When vals of array are number, return true
+*
+* @param array assoc
+* @return boolean
+*/
+function is_array_val_numeric($ar){
+    $is_numeric = true;
+
+    foreach($ar as $key => $val){
+        if(!is_numeric($val)){
+            $is_numeric = false;
+        }
+    }
+    return $is_numeric;
 }
 
 ?>
