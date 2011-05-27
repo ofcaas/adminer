@@ -53,11 +53,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
     */    
     public function tearDown()
     {
-        global $connection;
-        $db[] = $this->make_db_name;
-        drop_databases($db);
-       
-        unset($this->_c);
+             
     }
     
     /*
@@ -68,16 +64,9 @@ class driverTesting extends PHPUnit_Framework_TestCase
     public function test_connect()
     {
         global $connection;
-        
-        switch ($this->d_name) {
-            case "mssql":
-                $this->assertFalse($connection->connect("", "", "")); //test of connect with false
-                $connection->connect($this->server, $this->user, $this->pass); //return to normal connect
-                break;
-            default:
-                break;
-        }
-
+       
+        $this->assertFalse($connection->connect("", "", "")); //test of connect with false
+        $connection->connect($this->server, $this->user, $this->pass); //return to normal connect
     }
     
     
@@ -85,11 +74,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
     public function test_quote_result()
     {
         global $connection;
+        
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $connection->query("INSERT INTO TEST
                     (TEST_NAME, TEST_ID, TEST_DATE)
                     VALUES (" . $connection->quote("it's") . ",
@@ -98,8 +86,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $res = $connection->result("select * from [mytest].[dbo].[TEST] where TEST_ID = '20'");
                 $this->assertEquals($res, "it's");
                 $this->assertEquals($connection->quote("test'test"), "'test''test'");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -133,13 +120,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $res = $connection->result("select * from [mytest].[dbo].[TEST]");
                 $this->assertEquals($res, "jedna");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -153,9 +137,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
        global $connection;
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $result = $connection->query("select * from [TEST] where TEST_ID = '10'");
                 $array = $result->fetch_assoc();
                 $this->assertEquals($array["TEST_NAME"], "jedna");
@@ -203,16 +185,13 @@ class driverTesting extends PHPUnit_Framework_TestCase
         switch ($this->d_name) {
             case "mssql":
                 
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $result = $connection->query("select * from " . table("TEST"));
                 $row = $result->fetch_row();
                 $this->assertEquals($row[0], "jedna");
                 $_GET["ns"] = "dbo";
                 $this->assertEquals(table("test]test"), "[dbo].[test]]test]");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 $this->assertEquals(table("test`test"), "`test``test`");
@@ -242,8 +221,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     }
                 }
                 $this->assertTrue($mydb);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
 
@@ -259,13 +237,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $rows = get_rows("select" . limit(" * from TEST", " where TEST_ID != '500'", "2"));
                 $this->assertEquals(count($rows), "2");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 $tmp = "querywhere LIMIT 5 OFFSET 1";
@@ -284,13 +259,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $rows = get_rows("select" . limit1(" * from TEST", " where TEST_ID != '500'"));
                 $this->assertEquals(count($rows), "1");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 $tmp = "querywhere LIMIT 1";
@@ -310,8 +282,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
             case "mssql":
                 create_database($this->make_db_name, "Czech_BIN");
                 $this->assertEquals("Czech_BIN", db_collation($this->make_db_name, ""));
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
 
@@ -361,9 +332,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = array ( // from make_db
                     "TEST" => "USER_TABLE",
                     "TEST2" => "USER_TABLE",
@@ -371,8 +340,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     "NEWTABLE" => "USER_TABLE"
                 );
                 $this->assertEquals(tables_list(), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -386,14 +354,12 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = "4";
                 $db[] = $this->make_db_name;
                 $res = count_tables($db);
                 $this->assertEquals($res['mytest'], $tables);
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -407,9 +373,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+               create_db($this);
                 $tables = array (
                     "Name" => "TEST",
                     "Engine" => "USER_TABLE"
@@ -435,8 +399,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     "Engine" => "USER_TABLE"
                 );
                 $res = table_status();
-                $this->assertEquals($res, $tables2);
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -451,14 +414,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
        
        switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $connection->query($this->make_db_view); // view must be the first query
+                create_db($this, "view");
                 $this->assertTrue(is_view(table_status("v")));
                 $this->assertFalse(is_view(table_status("TEST")));
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
 
@@ -489,9 +448,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+               create_db($this);
                 $tables['TEST_NAME'] = array (
                     "field" =>"TEST_NAME",
                     "full_type" => "varchar(5)",
@@ -529,8 +486,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     "primary" => "0"
                     );
                 $this->assertEquals(fields("TEST"), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -545,15 +501,12 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
        switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables['PKINDEX_IDX']['type'] = "PRIMARY";
                 $tables['PKINDEX_IDX']['lengths'] = array();
                 $tables['PKINDEX_IDX']['columns'][1] = "ID";
                 $this->assertEquals(indexes("NEWTABLE"), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -568,14 +521,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $connection->query($this->make_db_view); // view must be the first query
-                $tables = array ( "select" =>"SELECT * FROM TEST WHERE TEST_NAME = 1");
+                create_db($this, "view");
+                $tables = array ( "select" =>"SELECT * FROM TEST");
                 $this->assertEquals(view("v"), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -608,8 +557,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $connection->select_db($this->make_db_name);
                 $connection->query("random");
                 $this->assertEquals(error(), "Could not find stored procedure &#039;random&#039;.");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
 
@@ -624,9 +572,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
         
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $result = $connection->result("select * from [dbo].[TEST] where TEST_NAME like " . exact_value("j%"));
                 $this->assertEquals($result, 'jedna');
                 $result = $connection->result("select * from [dbo].[TEST] where TEST_ID like " . exact_value("1%"));
@@ -634,9 +580,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $result = $connection->result("select * from [dbo].[TEST] where TEST_NAME like " . exact_value("%nA"));
                 $this->assertEquals($result, null);
                 $this->assertEquals(exact_value("test'test"), "'test''test'");
-
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                
@@ -701,9 +645,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
             case "mssql":
                 $_POST["Auto_increment"] = "5"; //to set auto_increment
 
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $connection->query("CREATE TABLE test_ai (
                       id INTEGER ". auto_increment() .",
                       name varchar(16) NOT NULL
@@ -711,8 +653,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $connection->query("insert into test_ai (name) values ('test')");
                 $this->assertEquals($connection->result("select id from test_ai"), "5");
                 drop_tables(array("test_ai"));
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 //@todo
@@ -729,10 +670,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
        switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                
+                create_db($this);
                 $col = array(
                     " TEST_NAME ",
                     " varchar(5) ",
@@ -763,9 +701,8 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 // to drop column
                 $this->assertTrue(alter_table("tabulka2", "tabulka2", array(array("TEST_NAME2", array(), "")), array(), "", "", "", "", ""));
 
-                $db[] = $this->make_db_name;
                 drop_tables(array("tabulka", "tabulka2"));
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 //@todo
@@ -782,10 +719,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
        switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-
+                create_db($this);
                 //to create index
                 $this->assertTrue(alter_indexes("NUMBERS", array(array("INDEX", "(EN)"))));
                 $tables = array(
@@ -807,8 +741,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $array = indexes("NUMBERS");
                 $this->assertTrue(empty($array));
 
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             case "mysql":
                 //@todo
@@ -826,15 +759,12 @@ class driverTesting extends PHPUnit_Framework_TestCase
         switch ($this->d_name) {
             case "mssql":
                 $this->assertEquals(last_id(), NULL);
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $connection->query("insert into NUMBERS (EN, FR) VALUES ('', '')");
                 $connection->query("insert into NUMBERS (EN, FR) VALUES ('', '')");
                 $this->assertEquals(last_id(), "2");
                 
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
 
@@ -849,17 +779,14 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables['FK_ID2'] = array (
                    "table" => "TEST",
                    "source" => array("ID2"),
                    "target" => array("TEST_ID")
                 );
                 $this->assertEquals(foreign_keys("TEST2"), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -874,9 +801,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = array (
                    "TEST_NAME" => "'dva'",
                    "TEST_ID" => "'2'",
@@ -885,8 +810,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $this->assertTrue(insert_into("TEST", $tables));
                 
                 $this->assertEquals($connection->result("select TEST_NAME from TEST where TEST_ID=2"), "dva");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -900,9 +824,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = array (
                    "[TEST_NAME]" => "'dva'",
                    "[TEST_ID]" => "'10'",
@@ -911,8 +833,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                 $primary["TEST_ID"] = "'10'";
                 $this->assertTrue(insert_update("TEST", $tables, $primary));
                 $this->assertEquals($connection->result("select TEST_NAME from TEST where TEST_ID=10"), "dva");
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -926,17 +847,14 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = array (
                    "TEST2"
                 );
                 $this->assertTrue(truncate_tables($tables));
 
                 $this->assertEquals($connection->result("select * from TEST2"), NULL);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -951,18 +869,14 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $connection->query($this->make_db_view); // view must be the first query
+                create_db($this, "view");
                 $views = array (
                         "v"
                          );
                 $this->assertTrue(drop_views($views));
                 $tables = array ( "select" =>"");
                 $this->assertEquals(view("v"), $tables);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -976,9 +890,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
+                create_db($this);
                 $tables = array ( // from make_db
                     "TEST" => "USER_TABLE",
                     "TEST2" => "USER_TABLE",
@@ -993,8 +905,7 @@ class driverTesting extends PHPUnit_Framework_TestCase
                     "NEWTABLE" => "USER_TABLE"
                 );
                 $this->assertEquals(tables_list(), $tables2);
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -1009,14 +920,10 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $connection->query($this->make_view);
-                $this->assertTrue(move_tables(array("NUMBERS"), array(), "dbo"));
+                create_db($this, "view");
+                $this->assertTrue(move_tables(array("NUMBERS", "TEST"), array("v"), "guest"));
                 
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                drop_db($this);
                 break;
             default:
                 break;
@@ -1025,29 +932,53 @@ class driverTesting extends PHPUnit_Framework_TestCase
     }
     
 
-    /*
+    
     public function test_trigger()
     {
         global $connection;
 
         switch ($this->d_name) {
             case "mssql":
-                create_database($this->make_db_name, "Czech_BIN");
-                $connection->select_db($this->make_db_name);
-                $connection->query($this->make_db);
-                $connection->query("CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END");
-                
-                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, trigger(array("potvrzeni")));
-                $this->assertEquals(trigger(array("potvrzeni")), array(""));
-                $db[] = $this->make_db_name;
-                drop_databases($db);
+                create_db($this, "trigger");
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, trigger("potvrzeni"));
+                $this->assertEquals(trigger("potvrzeni"), array(
+                    array(
+                        "Trigger" => "potvrzeni",
+                        "Event" => "INSERT",
+                        "Timing" => "AFTER",
+                        "text" => "CREATE TRIGGER potvrzeni ON TEST AFTER INSERT AS BEGIN print 'ok' END"
+                    ),
+                    "Statement" => ""
+                ));
+                drop_db($this);
                 break;
             default:
                 break;
         }
 
     }
-    */
+
+    public function test_triggers()
+    {
+        global $connection;
+
+        switch ($this->d_name) {
+            case "mssql":
+                create_db($this, "trigger");
+                $this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, triggers("TEST"));
+                $this->assertEquals(triggers("TEST"), array(
+                    "potvrzeni" => array(
+                        "AFTER", "INSERT"
+                    )
+                ));
+                drop_db($this);
+                break;
+            default:
+                break;
+        }
+
+    }
+    
 
     public function test_trigger_options()
     {
@@ -1081,28 +1012,15 @@ class driverTesting extends PHPUnit_Framework_TestCase
 
     }
 
+
     
-     public function test_get_schema()
+    public function test_schema()
     {
+       
        switch ($this->d_name) {
             case "mssql":
+                $this->assertTrue(set_schema("dbo")); //set_schema return only true value with no action
                 $this->assertEquals(get_schema(), "dbo");
-                break;
-            case "mysql":
-                //@todo
-                break;
-            default:
-               
-                break;
-        } 
-    }
-    
-    
-    public function test_set_schema()
-    {
-       switch ($this->d_name) {
-            case "mssql":
-                $this->assertTrue(set_schema(""));
                 break;
             case "mysql":
                 //@todo

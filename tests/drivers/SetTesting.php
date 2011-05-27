@@ -82,7 +82,7 @@ ALTER TABLE NEWTABLE ADD CONSTRAINT PKINDEX_IDX PRIMARY KEY (ID);
 
 ";
 
-$test_make_view['mssql'] = "CREATE VIEW v AS SELECT * FROM TEST WHERE TEST_NAME = 1";
-$test_make_trigger['mssql'] = "CREATE TRIGGER potvrzeni ON test AFTER INSERT AS BEGIN print 'ok' END";
+$test_make_view['mssql'] = "CREATE VIEW v AS SELECT * FROM TEST";
+$test_make_trigger['mssql'] = "CREATE TRIGGER potvrzeni ON TEST AFTER INSERT AS BEGIN print 'ok' END";
 
 ?>

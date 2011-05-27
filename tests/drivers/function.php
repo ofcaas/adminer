@@ -53,20 +53,43 @@ function getNameOfDriver($file)
     return $file_array[0];
 }
 
-/** Connection parameters
-* @return array ($server, $username, $password)
+/* To create dbs on test
 *
-class Adminer {
+* @param driverTesting object
+* @param string "view" to create view, "trigger" to create trigger
+*/
+function create_db($t, $next = ""){
+    global $connection;
+    
+    //$db = array($t->make_db_name);
+    //drop_databases($db);
 
-	function credentials() {
-                global $server;
-                global $user;
-                global $pass;
-                global $driver;
-                
-		return array($server[$driver], $user[$driver], $pass[$driver]);
-	}
+    create_database($t->make_db_name, "Czech_BIN");
+    $connection->select_db($t->make_db_name);
+    $connection->query($t->make_db);
+    if($next == "view"){
+        $connection->query($t->make_db_view);
+    }
+    if($next == "trigger"){
+        $connection->query($t->make_db_trigger);
+    }
 }
 
-$adminer = new Adminer();*/
+/* To drop dbs on test
+*
+* @param driverTesting object
+*/
+function drop_db($t){
+    $db = array($t->make_db_name);
+    drop_databases($db);
+}
+
+function is_key_string($ar){
+
+}
+
+function is_key_value($ar){
+
+}
+
 ?>

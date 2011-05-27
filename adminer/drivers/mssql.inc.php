@@ -532,7 +532,7 @@ JOIN syscomments c ON s.id = c.id
 WHERE s.xtype = 'TR' AND s.name = " . q($name)
 		); // triggers are not schema-scoped
 		
-                //$return = reset($rows);
+                $return = reset($rows);
                 $return = $rows;
 		if ($return) {
 			$return["Statement"] = preg_replace('~^.+\\s+AS\\s+~isU', '', $return["text"]); //! identifiers, comments
